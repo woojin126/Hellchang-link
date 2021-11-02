@@ -1,7 +1,7 @@
 import hashlib
-from datetime import datetime, timedelta
-
 import jwt
+from datetime import datetime, timedelta
+from functools import wraps
 from flask import Flask, render_template, jsonify, request
 from pymongo import MongoClient
 
@@ -9,6 +9,22 @@ app = Flask(__name__)
 # client = MongoClient('mongodb://test:test@localhost', 27017)
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
+
+app.config['SECRET_KEY'] = 'sparta'
+
+
+def token_required(f):
+    @wraps(f)
+    def decorated(*args, **kwargs):
+        token = request.args.get('token')
+        if not token:
+            return jsonify({"message": "Token is missing"}), 403
+        try:
+            payload = jwt.decode(token, app.config['SECRET_KEY'])
+        except:
+            return jsonify({"message": "Token is invalid"}), 403
+
+    return decorated
 
 
 @app.route('/category')
@@ -27,7 +43,7 @@ def mainPage():
 
 
 # API
-@app.route('/register', methods=['POST'])
+@app.route('/api/register', methods=['POST'])
 def register():
     member_Id = request.form['me_id']
     member_Pw = request.form['me_pw']
@@ -53,12 +69,10 @@ def register():
 # 2. db에 id, 암호화된 pw 가 존재하는지 찾는다
 # 3. 찾은 결과값이 있다면, 로그인 유지
 # 4. 찾은 결과값이 없다면, 로그인 실패
-
+#
 # jwt 토큰 사용에 필요한 비밀문자열, 인코딩/디코딩 할 수 있음
-SECRET_KEY = 'SPARTA'
 
-
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login2():
     id_receive = request.form['me_id']
     pw_receive = request.form['me_pw']
@@ -77,8 +91,9 @@ def login2():
             'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 만료기간 (24시간)
         }
         # 토큰 발급
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-        print('token:' + token)
+        token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
+
+        # print(jwt.decode(token, SECRET_KEY))
 
         # 토큰을 준다
         print('token 발급성공')
