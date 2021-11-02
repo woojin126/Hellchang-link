@@ -49,15 +49,7 @@ def register():
 
 
 # 로그인 기능
-# 1. 클라이언트 폼에서 id,pw 데이터를 가져온다
-# 2. db에 id, 암호화된 pw 가 존재하는지 찾는다
-# 3. 찾은 결과값이 있다면, 로그인 유지
-# 4. 찾은 결과값이 없다면, 로그인 실패
-
-# jwt 토큰 사용에 필요한 비밀문자열, 인코딩/디코딩 할 수 있음
 SECRET_KEY = 'SPARTA'
-
-
 @app.route('/login', methods=['POST'])
 def login2():
     id_receive = request.form['me_id']
@@ -89,6 +81,13 @@ def login2():
         print('token 발급실패')
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
+
+# 회원가입시, 아이디 중복검사 기능
+@app.route('/api/join/check_id_dup', methods=['POST'])
+def check_id_dup():
+    id_receive = request.form['me_id']
+    exists = bool(db.hellchangRegister.find_one({"id": id_receive}))  # exists: True or False
+    return jsonify({'exists': exists})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
