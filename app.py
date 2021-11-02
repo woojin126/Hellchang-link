@@ -27,7 +27,7 @@ def mainPage():
 
 
 # API
-@app.route('/register', methods=['POST'])
+@app.route('/api/register', methods=['POST'])
 def register():
     member_Id = request.form['me_id']
     member_Pw = request.form['me_pw']
@@ -58,7 +58,7 @@ def register():
 SECRET_KEY = 'SPARTA'
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login2():
     id_receive = request.form['me_id']
     pw_receive = request.form['me_pw']
