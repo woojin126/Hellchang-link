@@ -3,53 +3,31 @@ from datetime import datetime, timedelta
 
 import jwt
 from flask import Flask, render_template, jsonify, request
-from flask_jwt_extended import *
 from pymongo import MongoClient
 
 app = Flask(__name__)
-
-
-
-
-# JWT 매니저 활성화
-# app.config.update(DEBUG=True, JWT_SECRET_KEY="thisissecertkey")
-#
-# jwt = JWTManager(app)
-# app.config['JWT_COOKIE_SECURE'] = False  # https를 통해서만 cookie가 갈 수 있는지 (production 에선 True)
-# app.config['JWT_TOKEN_LOCATION'] = ['cookies']
-# app.config['JWT_ACCESS_COOKIE_PATH'] = '/'  # access cookie를 보관할 url (Frontend 기준)
-# app.config['JWT_REFRESH_COOKIE_PATH'] = '/'  # refresh cookie를 보관할 url (Frontend 기준)
-# # CSRF 토큰 역시 생성해서 쿠키에 저장할지
-# # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
-# app.config['JWT_COOKIE_CSRF_PROTECT'] = True
-
 # client = MongoClient('mongodb://test:test@localhost', 27017)
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
-@app.route('/')
-def mainPage():
-    return render_template('index.html' , name = "MAIN")
-
-@app.route('/login')
-def LoginPage():
-    return render_template('login.html', name = "LOGIN")
-
-@app.route('/register')
-def registerPage():
-    return render_template('register.html', name = "register")
 
 @app.route('/category')
 def categoryPage():
-    return render_template('category.html', name = "category")
+    return render_template('category.html', name="category")
+
 
 @app.route('/details')
 def DetailsPage():
-    return render_template('details.html', name = "details")
+    return render_template('details.html', name="details")
 
 
-#API
-@app.route('/api/sign_up', methods=['POST'])
+@app.route('/')
+def mainPage():
+    return render_template('index.html')
+
+
+# API
+@app.route('/register', methods=['POST'])
 def register():
     member_Id = request.form['me_id']
     member_Pw = request.form['me_pw']
@@ -80,7 +58,7 @@ def register():
 SECRET_KEY = 'SPARTA'
 
 
-@app.route('/api/login', methods=['POST'])
+@app.route('/login', methods=['POST'])
 def login2():
     id_receive = request.form['me_id']
     pw_receive = request.form['me_pw']
