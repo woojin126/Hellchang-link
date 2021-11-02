@@ -20,26 +20,75 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
 
-    <title>스파르타코딩클럽 | 나홀로일기장</title>
+    <title>헬창링크</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
 
     <style>
+        /*common*/
         * {
             font-family: 'Jua', sans-serif;
-        }
-        .posting-box {
-            width: 500px;
-            margin-top: 20px;
         }
         .wrap {
             width: 900px;
             margin: auto;
         }
-        .container {
-            padding-left: 50px;
+        .topNav{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 30px 16px;
         }
+        .logo img{
+            width:120px
+        }
+        .MyPicture {
+            width: 100px;
+            height: 80px;
+            overflow: hidden;
+            position: relative;
+        }
+        .MyPicture img{
+            width: 130%;
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%);
+        }
+        .MyList{
+            display: flex;
+            justify-content: space-between;
+            gap:20px;
+            align-items: center;
+            background-color: blanchedalmond;
+            border-radius: 10px;
+            padding: 25px 20px;
+        }
+        .flex{
+            display: flex;
+            gap: 10px;
+            align-items: self-end;
+        }
+        .contents{
+            padding: 30px 16px;
+        }
+        .sportsList{
+            list-style: none;
+            padding: 0px;
+            display: flex;
+            justify-content: space-between;
+        }
+        .sportsList a{
+            display: block;
+        }
+        .bottomNav{
+            text-align: center;
+        }
+        .logOut{
+            padding-left: 20px;
+        }
+
     </style>
     <script>
             $(document).ready(function () {
@@ -101,64 +150,49 @@
 </script>
 <body>
 <div class="wrap">
-    <div class="jumbotron jumbotron-fluid">
-    <div class="container">
-        <h1>나홀로 일기장</h1>
-        <div class="posting-box">
-            <div class="form-group">
-                <input type="email" class="form-control" id="title" placeholder="사진 제목">
+    <haeder class="topNav">
+        <h1 class="logo">
+            <img src={{ url_for('static', filename='img/logo.png') }}>
+        </h1>
+        <div class="MyList">
+            <div class="MyPicture">
+                 <img src={{ url_for('static', filename='img/man.jpeg') }}>
             </div>
-            <div class="form-group">
-                <textarea class="form-control" id="content" rows="3" placeholder="내용 입력"></textarea>
+            <div class="rightContents">
+                <div class="flex">
+                    <h2 class="name">
+                        제임스 브라우니
+                    </h2>
+                    <p class="welCome">님을 환영합니다.</p>
+                </div>
+                <a href="/">마이페이지</a>
+                <a href="/" class="logOut">로그아웃</a>
             </div>
-            <button onclick="positing()" type="button" class="btn btn-primary">저장하기</button>
         </div>
+    </haeder>
+    <div class="contents">
+        <ul class="sportsList">
+            <li>
+                <a href="/">
+                  <img src={{ url_for('static', filename='img/main1.png') }}>
+                </a>
+            </li>
+            <li>
+                <a href="/">
+                  <img src={{ url_for('static', filename='img/main2.png') }}>
+                </a>
+            </li>
+            <li>
+                <a href="/">
+                  <img src={{ url_for('static', filename='img/main3.png') }}>
+                </a>
+            </li>
+
+        </ul>
     </div>
-</div>
-    <div class="card-columns">
-    <div class="card">
-<!--        <img class="card-img-top" src="..." alt="Card image cap">-->
-        <div class="card-body">
-            <h5 class="card-title">창덕궁</h5>
-            <p class="card-text">날씨가 참 좋았다.</p>
-        </div>
-    </div>
-    <div class="card">
-<!--        <img class="card-img-top" src="..." alt="Card image cap">-->
-        <div class="card-body">
-            <h5 class="card-title">창덕궁</h5>
-            <p class="card-text">날씨가 참 좋았다.</p>
-        </div>
-    </div>
-    <div class="card">
-<!--        <img class="card-img-top" src="..." alt="Card image cap">-->
-        <div class="card-body">
-            <h5 class="card-title">창덕궁</h5>
-            <p class="card-text">날씨가 참 좋았다.</p>
-        </div>
-    </div>
-    <div class="card">
-<!--        <img class="card-img-top" src="..." alt="Card image cap">-->
-        <div class="card-body">
-            <h5 class="card-title">창덕궁</h5>
-            <p class="card-text">날씨가 참 좋았다.</p>
-        </div>
-    </div>
-    <div class="card">
-<!--        <img class="card-img-top" src="..." alt="Card image cap">-->
-        <div class="card-body">
-            <h5 class="card-title">창덕궁</h5>
-            <p class="card-text">날씨가 참 좋았다.</p>
-        </div>
-    </div>
-    <div class="card">
-<!--        <img class="card-img-top" src="..." alt="Card image cap">-->
-        <div class="card-body">
-            <h5 class="card-title">창덕궁</h5>
-            <p class="card-text">날씨가 참 좋았다.</p>
-        </div>
-    </div>
-</div>
+    <footer class="bottomNav">
+        Capyright 2021. 헬창링크. All rights reserved.
+    </footer>
 </div>
 </body>
 
