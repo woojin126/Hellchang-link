@@ -4,10 +4,21 @@ from datetime import datetime, timedelta
 import jwt
 from flask import Flask, render_template, jsonify, request
 from flask_jwt_extended import *
+from pymongo import MongoClient
 
 app = Flask(__name__)
 
-from pymongo import MongoClient
+# JWT 매니저 활성화
+# app.config.update(DEBUG=True, JWT_SECRET_KEY="thisissecertkey")
+#
+# jwt = JWTManager(app)
+# app.config['JWT_COOKIE_SECURE'] = False  # https를 통해서만 cookie가 갈 수 있는지 (production 에선 True)
+# app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+# app.config['JWT_ACCESS_COOKIE_PATH'] = '/'  # access cookie를 보관할 url (Frontend 기준)
+# app.config['JWT_REFRESH_COOKIE_PATH'] = '/'  # refresh cookie를 보관할 url (Frontend 기준)
+# # CSRF 토큰 역시 생성해서 쿠키에 저장할지
+# # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
+# app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
 # client = MongoClient('mongodb://test:test@localhost', 27017)
 client = MongoClient('localhost', 27017)
@@ -26,9 +37,11 @@ def register():
     member_Email = request.form['me_email']
     member_Name = request.form['me_name']
 
+    pw_hash = hashlib.sha256(member_Pw.encode('utf-8')).hexdigest()
+
     doc = {
         'me_id': member_Id,
-        'me_pw': member_Pw,
+        'me_pw': pw_hash,
         'me_email': member_Email,
         'member_name': member_Name
     }
@@ -36,26 +49,6 @@ def register():
     db.hellchangRegister.insert_one(doc)
 
     return jsonify({'msg': '회원가입이 되었습니다'})
-
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    me_id = request.form['me_id']
-    me_pw = request.form['me_pw']
-
-    member = db.hellchangRegister.find_one({'me_id': me_id}, {'me_pw': me_pw})
-    if member is None:
-        return jsonify({'login': False})
-
-    access_token = create_access_token(identity=me_id, expires_delta=False)
-    refresh_token = create_refresh_token(identity=me_id)
-
-    resp = jsonify({'login': True})
-
-    set_access_cookies(access_token)
-    set_refresh_cookies(refresh_token)
-
-    return resp,200
 
 
 # 로그인 기능
@@ -66,6 +59,8 @@ def login():
 
 # jwt 토큰 사용에 필요한 비밀문자열, 인코딩/디코딩 할 수 있음
 SECRET_KEY = 'SPARTA'
+
+
 @app.route('/api/login', methods=['POST'])
 def login2():
     id_receive = request.form['me_id']
@@ -75,7 +70,7 @@ def login2():
     pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
 
     # id, 암호화된 pw로 db에서 유저 찾기
-    result = db.hellchangRegister.find_one({'id': id_receive, 'pw': pw_hash})
+    result = db.hellchangRegister.find_one({'me_id': id_receive, 'me_pw': pw_hash})
 
     # 결과값이 존재하면, 로그인 성공, JWT 토큰 발급 (payload, SECRET_KEY 필요!)
     if result is not None:
@@ -85,8 +80,8 @@ def login2():
             'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 만료기간 (24시간)
         }
         # 토큰 발급
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('utf-8')
-        print('token:'+token)
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        print('token:' + token)
 
         # 토큰을 준다
         print('token 발급성공')
