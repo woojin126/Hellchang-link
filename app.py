@@ -8,6 +8,9 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
+
+
+
 # JWT 매니저 활성화
 # app.config.update(DEBUG=True, JWT_SECRET_KEY="thisissecertkey")
 #
@@ -24,12 +27,28 @@ app = Flask(__name__)
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
 
-
 @app.route('/')
 def mainPage():
-    return render_template('index.html')
+    return render_template('index.html' , name = "MAIN")
+
+@app.route('/login')
+def LoginPage():
+    return render_template('login.html', name = "LOGIN")
+
+@app.route('/register')
+def registerPage():
+    return render_template('register.html', name = "register")
+
+@app.route('/category')
+def categoryPage():
+    return render_template('category.html', name = "category")
+
+@app.route('/details')
+def DetailsPage():
+    return render_template('details.html', name = "details")
 
 
+#API
 @app.route('/api/sign_up', methods=['POST'])
 def register():
     member_Id = request.form['me_id']

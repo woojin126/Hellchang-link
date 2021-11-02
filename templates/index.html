@@ -20,7 +20,7 @@
             integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
             crossorigin="anonymous"></script>
 
-    <title>헬창링크</title>
+    <title>Hallchang / {{ name }}</title>
 
     <link rel="preconnect" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css2?family=Jua&display=swap" rel="stylesheet">
@@ -121,32 +121,7 @@
             }
       })
     }
-     function posting() {
-        let title = $('#title').val()
-        let content = $("#content").val()
 
-        $.ajax({
-            type: "POST",
-            url: "/posting",
-            data: {'title_give':title,'content_give':content},
-            success: function (response) {
-                alert(response["msg"])
-                window.location.reload()
-            }
-        });
-    }
-    function positing(){
-        let title = $('#title').val()
-        let content = $('#content').val()
-        $.ajax({
-            type: "POST",
-            url: "/diary",
-            data: { title_give:title,content_give:content },
-            success: function(response){
-                alert(response['msg'])
-            }
-          })
-        }
 </script>
 <body>
 <div class="wrap">
