@@ -1,14 +1,15 @@
 import hashlib
 from datetime import datetime, timedelta
-
 import jwt
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, url_for
 from pymongo import MongoClient
+from werkzeug.utils import redirect, secure_filename
 
 app = Flask(__name__)
 # client = MongoClient('mongodb://test:test@localhost', 27017)
 client = MongoClient('localhost', 27017)
 db = client.dbsparta
+app.config['SECRET_KEY'] = 'sparta'
 
 
 @app.route('/category')
@@ -19,6 +20,20 @@ def categoryPage():
 @app.route('/details')
 def DetailsPage():
     return render_template('details.html', name="details")
+
+
+@app.route("/api/token")
+def check_TokenValid():
+    token = request.cookies.get('token')
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        user_info = db.users.find_one({"me_id": payload["id"]})
+        if request.path.__eq__("/api/login"):
+            return render_template('index.html', user_info=user_info)
+    except jwt.ExpiredSignatureError:
+        return redirect(url_for("/api/login", msg="로그인 시간이 만료되었습니다."))
+    except jwt.exceptions.DecodeError:
+        return redirect(url_for("/api/login", msg="로그인 정보가 존재하지 않습니다."))
 
 
 @app.route('/')
@@ -35,7 +50,7 @@ def register():
     member_Name = request.form['me_name']
 
     pw_hash = hashlib.sha256(member_Pw.encode('utf-8')).hexdigest()
-
+    print(pw_hash, '비밀번호')
     doc = {
         'me_id': member_Id,
         'me_pw': pw_hash,
@@ -55,8 +70,6 @@ def register():
 # 4. 찾은 결과값이 없다면, 로그인 실패
 
 # jwt 토큰 사용에 필요한 비밀문자열, 인코딩/디코딩 할 수 있음
-SECRET_KEY = 'SPARTA'
-
 
 @app.route('/api/login', methods=['POST'])
 def login2():
@@ -77,17 +90,36 @@ def login2():
             'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 만료기간 (24시간)
         }
         # 토큰 발급
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(payload, app.config['SECRET_KEY'], algorithm='HS256')
         print('token:' + token)
-
         # 토큰을 준다
         print('token 발급성공')
+
         return jsonify({'result': 'success', 'token': token})
 
         # 존재하지 않으면
     else:
         print('token 발급실패')
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+
+
+@app.route("/api/comment")
+def comment():
+    token = request.cookies.get('token')
+    try:
+        payload = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        member_id = payload["id"]
+        comment = request.form["comment"]
+
+        doc = {
+            'me_id': member_id,
+            'comment': comment
+        }
+
+        db.hellchangComment.insert_one(doc)
+        return jsonify({"result": "success", "msg": "댓글추가 완료"})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("api/login"))
 
 
 if __name__ == '__main__':
