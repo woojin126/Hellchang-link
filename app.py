@@ -50,6 +50,19 @@ def loginPage():
     return render_template("login.html", msg=msg, name="login")
 
 
+@app.route("/api/profile")
+def profileInfo():
+    token_receive = request.cookies.get('token')
+
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        username = payload["id"]
+        result = db.users.find_one({'username': username})
+        return jsonify({"memberInfo": result['username']})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("/login"))
+
+
 # API
 
 @app.route('/sign_up/save', methods=['POST'])
