@@ -38,7 +38,9 @@ function request(){
         data: {
         },
         success: function (response) {
-          console.log(response)
+            let name = response['memberId']
+
+            $("#names").append(name +'님 환영합니다')
         }
     });
   }
@@ -59,9 +61,8 @@ function request(){
             <div class="rightContents">
                 <div class="flex">
                     <h2 class="name">
-                        제임스 브라우니
+                        <p id = "names"></p>
                     </h2>
-                    <p class="welCome">님을 환영합니다.</p>
                 </div>
                 <a href="/">마이페이지</a>
                 <a href="/" class="logOut" onclick="sign_out()">로그아웃</a>
