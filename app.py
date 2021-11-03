@@ -7,7 +7,6 @@ from pymongo import MongoClient
 
 app = Flask(__name__)
 
-
 # JWT 매니저 활성화
 # app.config.update(DEBUG=True, JWT_SECRET_KEY="thisissecertkey")
 #
@@ -75,9 +74,14 @@ def check_id_dup():
 SECRET_KEY = 'SPARTA'
 
 
-@app.route("/log")
+@app.route("/regi")
 def log():
     return render_template("register.html")
+
+
+@app.route("/api/login", methods=['GET'])
+def loginPage():
+    render_template("login.html")
 
 
 @app.route('/api/login', methods=['POST'])
