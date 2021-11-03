@@ -47,6 +47,7 @@ def register():
 
     return jsonify({'msg': '회원가입이 되었습니다'})
 
+
 # 회원가입시, 아이디 중복검사 기능
 @app.route('/api/register/check_id_dup', methods=['POST'])
 def check_id_dup():
@@ -55,8 +56,11 @@ def check_id_dup():
 
     return jsonify({'exists': exists})
 
+
 # 로그인 기능
 SECRET_KEY = 'SPARTA'
+
+
 @app.route('/api/login', methods=['POST'])
 def login():
     member_Id = request.form['me_id']
@@ -75,6 +79,25 @@ def login():
         return jsonify({'result': 'success', 'token': token})
     else:
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+
+
+@app.route("/api/comment", methods=['POST'])
+def comment():
+    token_receive = request.cookies.get('token')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        me_id = payload["id"]
+        comment = request.form['comment']
+
+        doc = {
+            "me_id": me_id,
+            "comment": comment
+        }
+
+        db.hellchangComment.insert_one(doc)
+        return jsonify({"result": "success", 'msg': '댓글 달기 완료'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("api/login"))
 
 
 if __name__ == '__main__':
