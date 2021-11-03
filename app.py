@@ -103,6 +103,20 @@ def login():
         return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
+@app.route("/api/profile")
+def profile():
+    token = request.cookies.get('token')
+
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+        memberId = payload["id"]
+
+        result = db.users.find_one({'username': memberId})
+        return jsonify({"memberId": result['username']})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("login"))
+
+
 @app.route("/api/comment", methods=['POST'])
 def comment():
     token_receive = request.cookies.get('token')
