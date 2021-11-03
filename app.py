@@ -2,7 +2,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 import jwt
-from flask import Flask, render_template, jsonify, request
+from flask import Flask, render_template, jsonify, request, redirect, url_for
 from pymongo import MongoClient
 
 app = Flask(__name__)
@@ -37,10 +37,10 @@ def register():
     pw_hash = hashlib.sha256(member_Pw.encode('utf-8')).hexdigest()
 
     doc = {
-        'me_id': member_Id,
-        'me_pw': pw_hash,
-        'me_email': member_Email,
-        'member_name': member_Name
+        'id': member_Id,
+        'pw': pw_hash,
+        'email': member_Email,
+        'name': member_Name
     }
 
     db.hellchangRegister.insert_one(doc)
@@ -48,46 +48,57 @@ def register():
     return jsonify({'msg': '회원가입이 되었습니다'})
 
 
-# 로그인 기능
-SECRET_KEY = 'SPARTA'
-@app.route('/api/login', methods=['POST'])
-def login():
-    id_receive = request.form['me_id']
-    pw_receive = request.form['me_pw']
-
-    # pw를 암호화
-    pw_hash = hashlib.sha256(pw_receive.encode('utf-8')).hexdigest()
-
-    # id, 암호화된 pw로 db에서 유저 찾기
-    result = db.hellchangRegister.find_one({'me_id': id_receive, 'me_pw': pw_hash})
-
-    # 결과값이 존재하면, 로그인 성공, JWT 토큰 발급 (payload, SECRET_KEY 필요!)
-    if result is not None:
-        # 토큰을 발급할 경로(id)와 만료기간(exp) 지정
-        payload = {
-            'id': id_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)  # 로그인 만료기간 (24시간)
-        }
-        # 토큰 발급
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-        print('token:' + token)
-
-        # 토큰을 준다
-        print('token 발급성공')
-        return jsonify({'result': 'success', 'token': token})
-
-        # 존재하지 않으면
-    else:
-        print('token 발급실패')
-        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
-
-
 # 회원가입시, 아이디 중복검사 기능
-@app.route('/api/join/check_id_dup', methods=['POST'])
+@app.route('/api/register/check_id_dup', methods=['POST'])
 def check_id_dup():
     id_receive = request.form['me_id']
     exists = bool(db.hellchangRegister.find_one({"id": id_receive}))  # exists: True or False
+
     return jsonify({'exists': exists})
+
+
+# 로그인 기능
+SECRET_KEY = 'SPARTA'
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    member_Id = request.form['me_id']
+    member_Pw = request.form['me_pw']
+
+    pw_hash = hashlib.sha256(member_Pw.encode('utf-8')).hexdigest()
+
+    result = db.hellchangRegister.find_one({'me_id': member_Id, 'me_pw': pw_hash})
+
+    if result is not None:
+        payload = {
+            'id': member_Id,
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        return jsonify({'result': 'success', 'token': token})
+    else:
+        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
+
+
+@app.route("/api/comment", methods=['POST'])
+def comment():
+    token_receive = request.cookies.get('token')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        me_id = payload["id"]
+        comment = request.form['comment']
+
+        doc = {
+            "me_id": me_id,
+            "comment": comment
+        }
+
+        db.hellchangComment.insert_one(doc)
+        return jsonify({"result": "success", 'msg': '댓글 달기 완료'})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for("api/login"))
+
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
