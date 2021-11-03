@@ -75,6 +75,11 @@ def check_id_dup():
 SECRET_KEY = 'SPARTA'
 
 
+@app.route("/log")
+def log():
+    return render_template("register.html")
+
+
 @app.route('/api/login', methods=['POST'])
 def login():
     member_Id = request.form['me_id']
