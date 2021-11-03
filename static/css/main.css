@@ -1,6 +1,7 @@
         /*common*/
         * {
             font-family: 'Jua', sans-serif;
+            box-sizing: border-box;
         }
         .wrap {
             width: 900px;
@@ -27,6 +28,10 @@
             left: 50%;
             top: 50%;
             transform: translate(-50%,-50%);
+        }
+        .PageTitle{
+            margin-bottom: 20px;
+            font-size: 32px;
         }
         .MyList{
             display: flex;
@@ -56,7 +61,90 @@
         }
         .bottomNav{
             text-align: center;
+           padding: 20px;
         }
         .logOut{
             padding-left: 20px;
+        }
+        .videoCards{
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 30px;
+        }
+        .videoCard{
+            width: 31%;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid #999;
+        }
+        .videoCard>a{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+        .videoCard .thumbnail{
+            border-radius: 10px;
+            width: 100%;
+            height: 160px;
+            background: #405D9D;
+            overflow: hidden;
+            position: relative;
+        }
+        .videoCard .thumbnail img{
+            position: absolute;
+            left: 50%;
+            top: 50%;
+            transform: translate(-50%,-50%) scale(1.2);
+
+        }
+        .videoCard .viedoTxt{
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            gap: 10px;
+        }
+        .videoCard .viedoTxt h4{
+            font-size: 18px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            word-wrap: break-word;
+            display: -webkit-box;
+            -webkit-line-clamp: 3; /* ellipsis line */
+            -webkit-box-orient: vertical;
+            line-height: 1.2em;
+	        height: 3.6em;
+            color: #000;
+        }
+        .videoCard .viedoTxt .like{
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .videoCard .viedoTxt .like i{
+            color: #e8344e;
+        }
+        .videoCard .viedoTxt .like span{
+            color: #000;
+        }
+        .paginationjs ul {
+            display: flex;
+            justify-content: center;
+            margin-top: 40px;
+        }
+        .paginationjs li a{
+            width:50px;
+            height:50px;
+            border:1px solid #405D9D;
+            display: block;
+            text-align: center;
+            line-height: 50px;
+            font-size: 18px;
+            margin-right: 6px;
+        }
+         .paginationjsli.active a{
+            background: #405D9D;
+             color: #fff;
         }
