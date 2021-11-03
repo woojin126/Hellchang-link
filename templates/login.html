@@ -1,6 +1,5 @@
 
 <!DOCTYPE html>
-	@import url('https://fonts.googleapis.com/css?family=Numans');
 <html lang="en">
 <head>
 	<meta charset="UTF-8">
@@ -18,7 +17,7 @@
 	<link rel="stylesheet" type="text/css" href="styles.css">
 
 	<style>
-
+	@import url('https://fonts.googleapis.com/css?family=Numans');
 		html,body{
 background-image: url('http://getwallpapers.com/wallpaper/full/a/5/d/544750.jpg');
 background-size: cover;
@@ -109,14 +108,12 @@ margin-left: 4px;
         display: none!important;
 }
 	</style>
+	<script type="text/javascript" src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
 
 	<script>
-	function callFunction(){
 
-	}
-
-
-	function login(){
+function login(){
 		let username = $("#memberId").val()
     	let password = $("#memberPw").val()
 		if (username == "") {
@@ -151,8 +148,8 @@ margin-left: 4px;
         }
     });
 
-		}
-	</script>
+}
+</script>
 </head>
 <body>
 <div class="container">
@@ -174,9 +171,9 @@ margin-left: 4px;
 						<input id="memberPw" type="password" class="form-control" placeholder="password">
 					</div>
 					<p id="help-password-login" class="help is-hidden">비밀번호가 틀렸습니다.</p>
-					<div class="form-group">
-						<input type="button" value="Login" class="btn float-right login_btn" onclick="login()">
-					</div>
+
+						<button type="button" class="btn float-right login_btn" onclick="login()">button</button>
+
 			</div>
 			<div class="card-footer">
 				<div class="d-flex justify-content-center links">
