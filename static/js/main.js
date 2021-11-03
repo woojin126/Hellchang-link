@@ -1,5 +1,6 @@
 $(document).ready(function () {
      listing()
+    console.log("hello world")
 })
 function listing(){
     $.ajax({

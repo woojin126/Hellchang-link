@@ -2,57 +2,80 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+
+
     <!------ Include the above in your HEAD tag ---------->
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
     <title>Hallchang / {{ name }}</title>
     <style>
         .divider-text {
-    position: relative;
-    text-align: center;
-    margin-top: 15px;
-    margin-bottom: 15px;
-}
-.divider-text span {
-    padding: 7px;
-    font-size: 12px;
-    position: relative;
-    z-index: 2;
-}
-.divider-text:after {
-    content: "";
-    position: absolute;
-    width: 100%;
-    border-bottom: 1px solid #ddd;
-    top: 55%;
-    left: 0;
-    z-index: 1;
-}
+            position: relative;
+            text-align: center;
+            margin-top: 15px;
+            margin-bottom: 15px;
+    }
+    .divider-text span {
+        padding: 7px;
+        font-size: 12px;
+        position: relative;
+        z-index: 2;
+    }
+    .divider-text:after {
+        content: "";
+        position: absolute;
+        width: 100%;
+        border-bottom: 1px solid #ddd;
+        top: 55%;
+        left: 0;
+        z-index: 1;
+    }
 
-.btn-facebook {
-    background-color: #405D9D;
-    color: #fff;
-}
-.btn-twitter {
-    background-color: #42AEEC;
-    color: #fff;
-}
+    .btn-facebook {
+        background-color: #405D9D;
+        color: #fff;
+    }
+    .btn-twitter {
+        background-color: #42AEEC;
+        color: #fff;
+    }
 
-.is-hidden {
-    display: none!important;
+    .is-hidden {
+        display: none!important;
+    }
+    .is-success{
+        display: block !important;
+    }
+    .button.is-sparta {
+        background-color: #e8344e;
+        border-color: transparent;
+        color: #fff !important;
+    }
+    .is-danger{
+         display: block !important;
+    }
+    .button.is-sparta.is-outlined {
+        background-color: transparent;
+        border-color: #e8344e;
+        color: #e8344e !important;
+    }
+
+    .help {
+        color: gray;
+    }
     </style>
 </head>
 
 <script>
     function sign_up() {
-    let memberId = $("#memberId").val()
-    let username = $("#memberName").val()
-    let memberEmail = $("#memberEmail").val()
+    let username = $("#memberId").val()
     let password = $("#memberPw").val()
     let password2 = $("#memberPw2").val()
+    let memberEmail = $("#memberEmail").val()
+    console.log(username, password, password2 ,memberEmail)
 
 
     if ($("#help-id").hasClass("is-danger")) {
@@ -85,22 +108,19 @@
     } else {
         $("#help-password2").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
     }
-
-        $.ajax({
+    $.ajax({
         type: "POST",
-        url: "/api/register",
+        url: "/sign_up/save",
         data: {
-            me_id : memberId,
-            me_pw : memberPw,
-            me_email : memberEmail,
-            me_name : memberName
+            username_give: username,
+            password_give: password,
+            email_give: memberEmail
         },
         success: function (response) {
             alert("회원가입을 축하드립니다!")
-            window.location.replace("/api/login")
+            window.location.replace("/login")
         }
     });
-
 }
 function is_nickname(asValue) {
     var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;
@@ -113,13 +133,14 @@ function is_password(asValue) {
 }
 
 function check_dup() {
-    let memberId = $("#memberId").val()
-    if (memberId == "") {
+    let username = $("#memberId").val()
+    console.log(username)
+    if (username == "") {
         $("#help-id").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
         $("#memberId").focus()
         return;
     }
-    if (!is_nickname(memberId)) {
+    if (!is_nickname(username)) {
         $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
         $("#memberId").focus()
         return;
@@ -127,15 +148,15 @@ function check_dup() {
     $("#help-id").addClass("is-loading")
     $.ajax({
         type: "POST",
-        url: "/api/register/check_id_dup",
+        url: "/sign_up/check_dup",
         data: {
-            me_id: memberId
+            username_give: username
         },
         success: function (response) {
 
             if (response["exists"]) {
                 $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
-                $("#input-username").focus()
+                $("#memberId").focus()
             } else {
                 $("#help-id").text("사용할 수 있는 아이디입니다.").removeClass("is-danger").addClass("is-success")
             }
