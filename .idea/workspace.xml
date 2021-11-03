@@ -5,16 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ba5e1f55-cc7d-45a3-8e41-64a310f26e7d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/db_init.py" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/static/js/main.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/templates/layout.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/static/css/main.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.py" beforeDir="false" afterPath="$PROJECT_DIR$/app.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/category.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/category.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/details.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/details.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/templates/register.html" beforeDir="false" afterPath="$PROJECT_DIR$/templates/register.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +177,7 @@
       <workItem from="1635850904741" duration="175000" />
       <workItem from="1635897358381" duration="118000" />
       <workItem from="1635899380470" duration="2650000" />
-      <workItem from="1635902112854" duration="5669000" />
+      <workItem from="1635902112854" duration="6038000" />
     </task>
     <servers />
   </component>
