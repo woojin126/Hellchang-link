@@ -5,10 +5,6 @@
     <link href="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
-                integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
-                crossorigin="anonymous"></script>
     <!------ Include the above in your HEAD tag ---------->
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.8/css/all.css">
@@ -89,20 +85,66 @@
     } else {
         $("#help-password2").text("비밀번호가 일치합니다.").removeClass("is-danger").addClass("is-success")
     }
-    $.ajax({
+
+        $.ajax({
         type: "POST",
-        url: "/sign_up/save",
+        url: "/api/register",
         data: {
-            username_give: username,
-            password_give: password
+            me_id : memberId,
+            me_pw : memberPw,
+            me_email : memberEmail,
+            me_name : memberName
         },
         success: function (response) {
             alert("회원가입을 축하드립니다!")
-            window.location.replace("/login")
+            window.location.replace("/api/login")
         }
     });
 
 }
+function is_nickname(asValue) {
+    var regExp = /^(?=.*[a-zA-Z])[-a-zA-Z0-9_.]{2,10}$/;
+    return regExp.test(asValue);
+}
+
+function is_password(asValue) {
+    var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z!@#$%^&*]{8,20}$/;
+    return regExp.test(asValue);
+}
+
+function check_dup() {
+    let memberId = $("#memberId").val()
+    if (memberId == "") {
+        $("#help-id").text("아이디를 입력해주세요.").removeClass("is-safe").addClass("is-danger")
+        $("#memberId").focus()
+        return;
+    }
+    if (!is_nickname(memberId)) {
+        $("#help-id").text("아이디의 형식을 확인해주세요. 영문과 숫자, 일부 특수문자(._-) 사용 가능. 2-10자 길이").removeClass("is-safe").addClass("is-danger")
+        $("#memberId").focus()
+        return;
+    }
+    $("#help-id").addClass("is-loading")
+    $.ajax({
+        type: "POST",
+        url: "/api/register/check_id_dup",
+        data: {
+            me_id: memberId
+        },
+        success: function (response) {
+
+            if (response["exists"]) {
+                $("#help-id").text("이미 존재하는 아이디입니다.").removeClass("is-safe").addClass("is-danger")
+                $("#input-username").focus()
+            } else {
+                $("#help-id").text("사용할 수 있는 아이디입니다.").removeClass("is-danger").addClass("is-success")
+            }
+            $("#help-id").removeClass("is-loading")
+
+        }
+    });
+}
+
 </script>
 <body>
 <div class="card bg-light">
@@ -118,7 +160,11 @@
                     <span class="input-group-text"> <i class="fa fa-user"></i> </span>
                 </div>
                 <input id="memberId" name="" class="form-control" placeholder="id" type="text">
+                 <span id="btn-check-dup" class="control">
+                                <button class="button is-sparta" onclick="check_dup()">중복확인</button>
+                </span>
             </div>
+
             <p id="help-id" class="help is-hidden">아이디는 2-10자의 영문과 숫자와 일부 특수문자(._-)만 입력 가능합니다.</p>                        <p id="help-id-login" class="help is-danger"></p>
 
             <div class="form-group input-group">
@@ -147,9 +193,7 @@
                 <input id="memberPw2" class="form-control" placeholder="Repeat password" type="password">
             </div> <!-- form-group// -->
             <p id="help-password2" class="help is-hidden">비밀번호를 다시 한 번 입력해주세요.</p>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary btn-block"> Create Account</button>
-            </div> <!-- form-group// -->
+                <button type="button" class="btn btn-primary btn-block" onclick="sign_up()"> Create Account</button>
             <p class="text-center">Have an account? <a href="">Log In</a></p>
 
     </article>
