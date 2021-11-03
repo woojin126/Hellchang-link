@@ -3,9 +3,66 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<body>
- <div class="videoCards">
+<script>
+    $(function () {
+        let container = $('#pagination');
+        container.pagination({
+            dataSource: [
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
+                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
 
- </div>
+            ],
+            pageSize: 9,
+            showPrevious: false,
+            showNext: false,
+            callback: function (data, pagination) {
+                var dataHtml = '<ul class="videoCards">';
+
+                $.each(data, function (index, item) {
+                    let li = `<li class="videoCard">
+                           <a href="${item.link}">
+                            <div class="thumbnail">
+                                <img src='${item.img}'>
+                            </div>
+                            <div class="viedoTxt">
+                                 <h4 class="title">${item.title}</h4>
+                                 <div class="like">
+                                    <i class="fas fa-heart"></i>
+                                    <span class="num">342</span>
+                                 </div>
+                            </div>
+                           </a>
+                          </li>`
+
+                    dataHtml += li;
+                });
+                dataHtml += '</ul> ';
+
+                $("#data-container").html(dataHtml);
+            }
+        })
+    })
+</script>
+<body>
+<h2 class="PageTitle"> 카테고리 </h2>
+<div id="demo1">
+    <div id="data-container"></div>
+    <div id="pagination"></div>
+</div>
+
+
 </body>
 {% endblock %}
