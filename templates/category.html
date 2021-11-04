@@ -37,7 +37,7 @@
 
                 $.each(data, function (index, item) {
                     let li = `<li class="videoCard">
-                           <a href="/details">
+                           <a href="/details/${item.num}/${item.key}">
                             <div class="thumbnail">
                                 <img src='${item.image}'>
                             </div>

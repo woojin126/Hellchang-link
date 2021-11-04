@@ -52,7 +52,9 @@ function request(){
 <div class="wrap">
     <haeder class="topNav">
         <h1 class="logo">
-            <img src={{ url_for('static', filename='img/logo.png') }}>
+            <a href="/">
+                 <img src={{ url_for('static', filename='img/logo.png') }}>
+            </a>
         </h1>
         <div class="MyList">
             <div class="MyPicture">
@@ -64,7 +66,6 @@ function request(){
                         <p id = "names"></p>
                     </h2>
                 </div>
-                <a href="/">마이페이지</a>
                 <a href="/" class="logOut" onclick="sign_out()">로그아웃</a>
             </div>
         </div>

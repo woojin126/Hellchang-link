@@ -48,14 +48,15 @@ def get_image_title(url):
 
 
             print(idx, title.text, img_url , title.get_attribute("href"))
-            idx += 1
             doc = {
+                "num":idx,
                 "title": title.text,
                 "image":img_url,
                 "link":title.get_attribute("href"),
-                "key":"baseball",
+                "key":"soccer",
             }
             db.sports.insert_one(doc)
+            idx += 1
         except Exception as e:
             print()
             print(e)
@@ -65,7 +66,7 @@ def get_image_title(url):
     return image_list, title_list
 
 # 자이언트 펭TV
-url1 = 'https://www.youtube.com/channel/UC_xgQWu3RvW58p0_cofgfmA/videos'
+url1 = 'https://www.youtube.com/channel/UCHnQ4TfvwkbJpqq2Pzd8oCg/videos'
 image1, title1 = get_image_title(url1)
 
 

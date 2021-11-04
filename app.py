@@ -41,11 +41,9 @@ def categoryPage(keyword):
     return render_template('category.html', name="category", word=keyword)
 
 
-@app.route('/details/')
-def DetailsPage():
-    ns = request.args.get('namespace', default='ns-abc-aaa', type=str)
-    print(ns)
-    return render_template('details.html', name="details", ns=ns)
+@app.route('/details/<index>/<key>')
+def DetailsPage(index , key):
+    return render_template('details.html', name="details" ,index=index,key=key)
 
 
 @app.route('/register')
@@ -121,6 +119,13 @@ def sportsCategory():
     result = list(db.sports.find({'key': category}, {'_id': True}))
     return jsonify({"result": result, "msg": "baseball data"})
 
+@app.route("/api/details/", methods=['GET'])
+def sportsDetails():
+    key = request.args.get('key')
+    index = request.args.get('index')
+
+    result = list(db.sports.find_one({'key': key},{},{'_id':False}))
+    return jsonify({"result": result, "msg": "baseball data"})
 
 # 회원가입시, 아이디 중복검사 기능
 @app.route('/sign_up/check_dup', methods=['POST'])
