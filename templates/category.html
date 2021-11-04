@@ -5,6 +5,20 @@
 {% block content %}
 <script>
     $(function () {
+        let data = 'baseball'
+        function showStar(data) {
+          $.ajax({
+              type: 'GET',
+              url: '/api/sports',
+              data: {
+                  key:data
+              },
+              success: function (res) {
+                  console.log()(res['result']);
+              }
+          });
+        }
+        showStar(data)
         let container = $('#pagination');
         container.pagination({
             dataSource: [

@@ -25,24 +25,24 @@ app = Flask(__name__)
 # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
 # client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
-client = MongoClient('localhost', 27017)
+client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017 ,authSource="admin")
 db = client.dbhellchang
-
-
-@app.route('/category')
-def categoryPage():
-    return render_template('category.html', name="category")
-
-
-@app.route('/details')
-def DetailsPage():
-    return render_template('details.html', name="details")
-
 
 @app.route('/')
 def mainPage():
     return render_template('index.html')
 
+@app.route('/category')
+def categoryPage():
+    return render_template('category.html', name="category")
+
+@app.route('/details')
+def DetailsPage():
+    return render_template('details.html', name="details")
+
+@app.route('/register')
+def registerPage():
+    return render_template('register.html', name="register")
 
 @app.route("/login")
 def loginPage():
@@ -65,7 +65,7 @@ def sign_up():
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
     }
-    db.hi.insert_one(doc)
+    db.users.insert_one(doc)
     return jsonify({'result': 'success'})
 
 
@@ -80,6 +80,15 @@ def sportsCategory(data):
     else:
         result = db.sports.find({"key": data}, {"_id": False})
         return jsonify({"result": result})
+
+@app.route("/api/sports/<key>" , methods=['GET'])
+def sportsCategory():
+    key = request.args.get('key')
+    print(key)
+    result = list(db.sports.find({"key": key},{"_id": False}))
+    return jsonify({"result": result})
+
+
 
 
 # 회원가입시, 아이디 중복검사 기능
