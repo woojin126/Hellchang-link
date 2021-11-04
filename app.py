@@ -23,13 +23,10 @@ app = Flask(__name__)
 # # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
 # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
-client = MongoClient("localhost", 27017)
+# client = MongoClient("localhost", 27017)
 # client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
-#client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017, authSource="admin")
+client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017, authSource="admin")
 db = client.dbhellchang
-
-# 로그인 기능
-SECRET_KEY = 'SPARTA'
 
 @app.route('/')
 def mainPage():
@@ -56,6 +53,8 @@ def loginPage():
     msg = request.args.get("msg")
     return render_template("login.html", msg=msg, name="login")
 
+# 로그인 기능
+SECRET_KEY = 'SPARTA'
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -116,7 +115,7 @@ def sign_up():
 def sportsCategory():
     category = request.args.get('category')
     print(category)
-    result = list(db.sports.find({'key': category}, {'_id': True}))
+    result = list(db.sports.find({'key': category}, {'_id': False}))
     return jsonify({"result": result, "msg": "baseball data"})
 
 @app.route("/api/details/", methods=['GET'])
