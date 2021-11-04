@@ -5,7 +5,7 @@
 {% block content %}
 <script>
     $(function () {
-        let data = 'baseball'
+        let data = '{{ word }}'
         function showStar(data) {
           $.ajax({
               type: 'GET',
@@ -15,9 +15,13 @@
               },
               success: function (res) {
                   let List = res['result']
+                  console.log(List)
                   cateGoryList(List)
               }
           });
+        }
+        function detailsMove(){
+
         }
         showStar(data)
         function cateGoryList(List){
@@ -32,7 +36,7 @@
 
                 $.each(data, function (index, item) {
                     let li = `<li class="videoCard">
-                           <a href="${item.link}">
+                           <a href="/details">
                             <div class="thumbnail">
                                 <img src='${item.image}'>
                             </div>

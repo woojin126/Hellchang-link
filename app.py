@@ -34,14 +34,16 @@ def mainPage():
     return render_template('index.html')
 
 
-@app.route('/category')
-def categoryPage():
-    return render_template('category.html', name="category")
+@app.route('/category/<keyword>')
+def categoryPage(keyword):
+    return render_template('category.html', name="category",word=keyword)
 
 
-@app.route('/details')
+@app.route('/details/')
 def DetailsPage():
-    return render_template('details.html', name="details")
+    ns = request.args.get('namespace', default='ns-abc-aaa', type=str)
+    print(ns)
+    return render_template('details.html', name="details",ns=ns)
 
 
 @app.route('/register')
@@ -92,7 +94,8 @@ def sign_up():
 @app.route("/api/sports", methods=['GET'])
 def sportsCategory():
     category = request.args.get('category')
-    result = list(db.sports.find({'key': category}, {'_id': False}))
+    print(category)
+    result = list(db.sports.find({'key': category},{'_id':False}))
     return jsonify({"result": result, "msg": "baseball data"})
 
 
