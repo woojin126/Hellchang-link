@@ -1,5 +1,9 @@
 import hashlib
+import json
 from datetime import datetime, timedelta
+from bson.objectid import ObjectId
+from bson.json_util import dumps
+# from bson import json_util, ObjectId
 
 import jwt
 import pymongo
@@ -65,16 +69,16 @@ def sign_up():
     return jsonify({'result': 'success'})
 
 
-@app.route("/api/sports/<data>")
+@app.route("/api/sports/<data>", methods=['GET'])
 def sportsCategory(data):
     if data == 'soccer':
-        result = db.sports.find({"key": data})
+        result = db.sports.find({"key": data}, {"_id": False})
         return jsonify({"result": result})
     elif data == 'baseball':
-        result = db.sports.find({"key": data})
+        result = db.sports.find({"key": data}, {"_id": False})
         return jsonify({"result": result})
     else:
-        result = db.sports.find({"key": data})
+        result = db.sports.find({"key": data}, {"_id": False})
         return jsonify({"result": result})
 
 
