@@ -2,6 +2,7 @@ import hashlib
 from datetime import datetime, timedelta
 
 import jwt
+import pymongo
 from flask import Flask, render_template, jsonify, request, redirect, url_for
 from pymongo import MongoClient
 
@@ -19,7 +20,7 @@ app = Flask(__name__)
 # # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
 # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
-# client = MongoClient('mongodb://test:test@localhost', 27017)
+# client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
 client = MongoClient('localhost', 27017)
 db = client.dbhellchang
 
@@ -39,18 +40,11 @@ def mainPage():
     return render_template('index.html')
 
 
-@app.route("/regi")
-def log():
-    return render_template("register.html")
-
-
 @app.route("/login")
 def loginPage():
     msg = request.args.get("msg")
     return render_template("login.html", msg=msg, name="login")
 
-
-# API
 
 @app.route('/sign_up/save', methods=['POST'])
 def sign_up():
@@ -67,8 +61,21 @@ def sign_up():
         "profile_pic_real": "profile_pics/profile_placeholder.png",  # 프로필 사진 기본 이미지
         "profile_info": ""  # 프로필 한 마디
     }
-    db.users.insert_one(doc)
+    db.hi.insert_one(doc)
     return jsonify({'result': 'success'})
+
+
+@app.route("/api/sports/<data>")
+def sportsCategory(data):
+    if data == 'soccer':
+        result = db.sports.find({"key": data})
+        return jsonify({"result": result})
+    elif data == 'baseball':
+        result = db.sports.find({"key": data})
+        return jsonify({"result": result})
+    else:
+        result = db.sports.find({"key": data})
+        return jsonify({"result": result})
 
 
 # 회원가입시, 아이디 중복검사 기능
@@ -122,11 +129,11 @@ def comment():
     token_receive = request.cookies.get('token')
     try:
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        me_id = payload["id"]
+        memberId = payload["id"]
         comment = request.form['comment']
 
         doc = {
-            "me_id": me_id,
+            "username": memberId,
             "comment": comment
         }
 
