@@ -3,7 +3,6 @@ import json
 from datetime import datetime, timedelta
 from bson.objectid import ObjectId
 from bson.json_util import dumps
-# from bson import json_util, ObjectId
 
 import jwt
 import pymongo
@@ -24,25 +23,31 @@ app = Flask(__name__)
 # # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
 # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
-# client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
-client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017 ,authSource="admin")
+# client = MongoClient("localhost", 27017)
+client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
+# client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017 ,authSource="admin")
 db = client.dbhellchang
+
 
 @app.route('/')
 def mainPage():
     return render_template('index.html')
 
+
 @app.route('/category')
 def categoryPage():
     return render_template('category.html', name="category")
+
 
 @app.route('/details')
 def DetailsPage():
     return render_template('details.html', name="details")
 
+
 @app.route('/register')
 def registerPage():
     return render_template('register.html', name="register")
+
 
 @app.route("/login")
 def loginPage():
@@ -69,24 +74,26 @@ def sign_up():
     return jsonify({'result': 'success'})
 
 
-# @app.route("/api/sports/<data>", methods=['GET'])
-# def sportsCategory(data):
-#     if data == 'soccer':
-#         result = db.sports.find({"key": data}, {"_id": False})
-#         return jsonify({"result": result})
-#     elif data == 'baseball':
-#         result = db.sports.find({"key": data}, {"_id": False})
-#         return jsonify({"result": result})
-#     else:
-#         result = db.sports.find({"key": data}, {"_id": False})
-#         return jsonify({"result": result})
-
-@app.route("/api/sports" , methods=['GET'])
+#카타테코리 페이지에서 원하는종목 버튼 클릭했을때 데이터요청
+@app.route("/api/sports/selectOne", methods=['GET'])
 def sportsCategory():
     category = request.args.get('category')
-    print(category)
-    result = list(db.sports.find({'key':category},{'_id': False}))
-    return jsonify({"result": result ,"msg":"GET 성공!!"})
+    if category == 'baseball':
+        result = list(db.sports.find({'key': category}, {'_id': False}))
+        return jsonify({"result": result, "msg": "baseball data"})
+    elif category == 'basketball':
+        result = list(db.sports.find({'key': category}, {'_id': False}))
+        return jsonify({"result": result, "msg": "basketball data"})
+    else:
+        result = list(db.sports.find({'key': category}, {'_id': False}))
+        return jsonify({"result": result, "msg": "soccer data"})
+
+
+@app.route("/api/sports", methods=['GET'])
+def sportsCategory():
+    category = request.args.get('category')
+    result = list(db.sports.find({'key': category}, {'_id': False}))
+    return jsonify({"result": result, "msg": "baseball data"})
 
 
 # 회원가입시, 아이디 중복검사 기능
