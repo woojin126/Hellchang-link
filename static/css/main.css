@@ -148,3 +148,41 @@
             background: #405D9D;
              color: #fff;
         }
+         .commentBox{
+             height:340px;
+             background-color:#dddddd;
+             padding: 12px;
+             border-radius: 15px;
+         }
+         .commentWindow{
+             height:260px;
+             background-color: #fff;
+            border-radius: 15px;
+             overflow: scroll;
+             padding: 12px;
+         }
+         .comment{
+             padding: 8px;
+             background-color: #fff;
+              border-radius: 8px;
+             color: #000;
+             margin-bottom: 10px;
+             border: 1px solid #000;
+         }
+         .commentName{
+             justify-content: flex-end;
+         }
+         .commentName h5{
+             margin-right: auto;
+         }
+
+         #msg{
+                width: 100%;
+                display: block;
+                margin-top: 10px;
+                border-radius: 7px;
+                box-shadow: none;
+                border: 0px;
+                height: 37px;
+                padding: 0px 16px;
+         }

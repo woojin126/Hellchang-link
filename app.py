@@ -24,8 +24,8 @@ app = Flask(__name__)
 # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
 # client = MongoClient("localhost", 27017)
-client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
-# client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017 ,authSource="admin")
+# client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
+client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017 ,authSource="admin")
 db = client.dbhellchang
 
 
@@ -75,18 +75,18 @@ def sign_up():
 
 
 #카타테코리 페이지에서 원하는종목 버튼 클릭했을때 데이터요청
-@app.route("/api/sports/selectOne", methods=['GET'])
-def sportsCategory():
-    category = request.args.get('category')
-    if category == 'baseball':
-        result = list(db.sports.find({'key': category}, {'_id': False}))
-        return jsonify({"result": result, "msg": "baseball data"})
-    elif category == 'basketball':
-        result = list(db.sports.find({'key': category}, {'_id': False}))
-        return jsonify({"result": result, "msg": "basketball data"})
-    else:
-        result = list(db.sports.find({'key': category}, {'_id': False}))
-        return jsonify({"result": result, "msg": "soccer data"})
+# @app.route("/api/sports/selectOne", methods=['GET'])
+# def sportsCategoryList():
+#     category = request.args.get('category')
+#     if category == 'baseball':
+#         result = list(db.sports.find({'key': category}, {'_id': False}))
+#         return jsonify({"result": result, "msg": "baseball data"})
+#     elif category == 'basketball':
+#         result = list(db.sports.find({'key': category}, {'_id': False}))
+#         return jsonify({"result": result, "msg": "basketball data"})
+#     else:
+#         result = list(db.sports.find({'key': category}, {'_id': False}))
+#         return jsonify({"result": result, "msg": "soccer data"})
 
 
 @app.route("/api/sports", methods=['GET'])
