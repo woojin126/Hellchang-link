@@ -38,9 +38,9 @@ def categoryPage(keyword):
     return render_template('category.html', name="category", word=keyword)
 
 
-@app.route('/details/<index>/<key>')
-def DetailsPage(index , key):
-    return render_template('details.html', name="details" ,index=index,key=key)
+@app.route('/details/<category>/<title>')
+def DetailsPage(category,title):
+    return render_template('details.html', name="details" , title=title , categorys=category )
 
 
 @app.route('/register')
@@ -116,15 +116,17 @@ def sportsCategory():
     category = request.args.get('category')
     print(category)
     result = list(db.sports.find({'key': category}, {'_id': False}))
-    return jsonify({"result": result, "msg": "baseball data"})
+    return jsonify({"result": result})
 
-@app.route("/api/details/", methods=['GET'])
+
+@app.route("/api/details", methods=['GET'])
 def sportsDetails():
-    key = request.args.get('key')
-    index = request.args.get('index')
+    link = request.args.get('link')
+    result = db.sports.find_one({'link': link},{'_id':False})
+    return jsonify({"result": result})
 
-    result = list(db.sports.find_one({'key': key},{},{'_id':False}))
-    return jsonify({"result": result, "msg": "baseball data"})
+
+
 
 # 회원가입시, 아이디 중복검사 기능
 @app.route('/sign_up/check_dup', methods=['POST'])

@@ -34,10 +34,10 @@
             showNext: false,
             callback: function (data, pagination) {
                 var dataHtml = '<ul class="videoCards">';
-
                 $.each(data, function (index, item) {
+                    const id = item.link.replace("https://www.youtube.com/watch?v=", " ")
                     let li = `<li class="videoCard">
-                           <a href="/details/${item.num}/${item.key}">
+                           <a href="/details/${item.key}/${id}">
                             <div class="thumbnail">
                                 <img src='${item.image}'>
                             </div>

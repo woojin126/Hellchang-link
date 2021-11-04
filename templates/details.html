@@ -4,35 +4,33 @@
 {% endblock %}
 {% block content %}
 <script>
-  let num = '{{ index }}'
-  let key = '{{ key }}'
- $(document).ready(function () {
-     get_details()
- })
+  let title= '{{ title }}'
+  let ti = `https://www.youtube.com/watch?v=${title}`
+ $(function get_details() {
+      $.ajax({
+          type: "GET",
+          url: '/api/details',
+          data: {
+            link:ti.replace(/\s/gi, ""),
+          },
+          success: function (response) {
+              let res = response['result']
+              console.log(res)
+              const id = res.link.replace("https://www.youtube.com/watch?v=", " ")
 
- function get_details() {
-     $.ajax({
-         type: "GET",
-         url: '/api/details/',
-         beforeSend: function (xhr) {
-             xhr.setRequestHeader("Authorization", "Token [내토큰]");
-         },
-         data: {
-           num:num,
-           key:key
-         },
-         error: function (xhr, status, error) {
-             alert("에러 발생!");
-         },
-         success: function (response) {
-             console.log(response)
-         }
-     })
- }
+              const video = ` <h2 class="PageTitle"> ${res.title}</h2><iframe width="872" height="486" src="https://www.youtube.com/embed/${id.replace(/\s/gi, "")}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+              $('.videoBox').append(video)
+
+          }
+      })
+  }
+ )
+
+
 </script>
 <body>
-  <h2 class="PageTitle"> 야구장에서 개그를하는심판...</h2>
-  <iframe width="872" height="486" src="https://www.youtube.com/embed/56Kz5RzaO9I" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+  <div class="videoBox">
+  </div>
   <div class="commentBox">
     <div class="commentWindow">
      <ul>
