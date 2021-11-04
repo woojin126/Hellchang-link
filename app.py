@@ -69,26 +69,24 @@ def sign_up():
     return jsonify({'result': 'success'})
 
 
-@app.route("/api/sports/<data>", methods=['GET'])
-def sportsCategory(data):
-    if data == 'soccer':
-        result = db.sports.find({"key": data}, {"_id": False})
-        return jsonify({"result": result})
-    elif data == 'baseball':
-        result = db.sports.find({"key": data}, {"_id": False})
-        return jsonify({"result": result})
-    else:
-        result = db.sports.find({"key": data}, {"_id": False})
-        return jsonify({"result": result})
+# @app.route("/api/sports/<data>", methods=['GET'])
+# def sportsCategory(data):
+#     if data == 'soccer':
+#         result = db.sports.find({"key": data}, {"_id": False})
+#         return jsonify({"result": result})
+#     elif data == 'baseball':
+#         result = db.sports.find({"key": data}, {"_id": False})
+#         return jsonify({"result": result})
+#     else:
+#         result = db.sports.find({"key": data}, {"_id": False})
+#         return jsonify({"result": result})
 
-@app.route("/api/sports/<key>" , methods=['GET'])
+@app.route("/api/sports" , methods=['GET'])
 def sportsCategory():
-    key = request.args.get('key')
-    print(key)
-    result = list(db.sports.find({"key": key},{"_id": False}))
-    return jsonify({"result": result})
-
-
+    category = request.args.get('category')
+    print(category)
+    result = list(db.sports.find({'key':category},{'_id': False}))
+    return jsonify({"result": result ,"msg":"GET 성공!!"})
 
 
 # 회원가입시, 아이디 중복검사 기능

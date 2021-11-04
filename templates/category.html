@@ -11,34 +11,19 @@
               type: 'GET',
               url: '/api/sports',
               data: {
-                  key:data
+                  category:data
               },
               success: function (res) {
-                  console.log()(res['result']);
+                  let List = res['result']
+                  cateGoryList(List)
               }
           });
         }
         showStar(data)
-        let container = $('#pagination');
-        container.pagination({
-            dataSource: [
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-                {name: "hello1",link:'details',img:'https://i.postimg.cc/mgF9DwmL/basketball-1642384-1920.jpg',title:'운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다 운동영상입니다'},
-
-            ],
+        function cateGoryList(List){
+            let container = $('#pagination');
+            container.pagination({
+            dataSource: List,
             pageSize: 9,
             showPrevious: false,
             showNext: false,
@@ -49,7 +34,7 @@
                     let li = `<li class="videoCard">
                            <a href="${item.link}">
                             <div class="thumbnail">
-                                <img src='${item.img}'>
+                                <img src='${item.image}'>
                             </div>
                             <div class="viedoTxt">
                                  <h4 class="title">${item.title}</h4>
@@ -68,6 +53,8 @@
                 $("#data-container").html(dataHtml);
             }
         })
+        }
+
     })
 </script>
 <body>
