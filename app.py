@@ -23,11 +23,13 @@ app = Flask(__name__)
 # # (이 경우엔 프론트에서 접근해야하기 때문에 httponly가 아님)
 # app.config['JWT_COOKIE_CSRF_PROTECT'] = True
 
-# client = MongoClient("localhost", 27017)
+client = MongoClient("localhost", 27017)
 # client = MongoClient('mongodb://rladnwls:rladnwls@localhost', 27017)
-client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017 ,authSource="admin")
+#client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017, authSource="admin")
 db = client.dbhellchang
 
+# 로그인 기능
+SECRET_KEY = 'SPARTA'
 
 @app.route('/')
 def mainPage():
@@ -36,14 +38,14 @@ def mainPage():
 
 @app.route('/category/<keyword>')
 def categoryPage(keyword):
-    return render_template('category.html', name="category",word=keyword)
+    return render_template('category.html', name="category", word=keyword)
 
 
 @app.route('/details/')
 def DetailsPage():
     ns = request.args.get('namespace', default='ns-abc-aaa', type=str)
     print(ns)
-    return render_template('details.html', name="details",ns=ns)
+    return render_template('details.html', name="details", ns=ns)
 
 
 @app.route('/register')
@@ -55,6 +57,27 @@ def registerPage():
 def loginPage():
     msg = request.args.get("msg")
     return render_template("login.html", msg=msg, name="login")
+
+
+@app.route('/api/login', methods=['POST'])
+def login():
+    username_receive = request.form['username_give']
+    password_receive = request.form['password_give']
+
+    pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
+
+    result = db.users.find_one({'username': username_receive, 'password': pw_hash})
+
+    if result is not None:
+        payload = {
+            'id': username_receive,
+            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
+        }
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+
+        return jsonify({'result': 'success', 'token': token})
+    else:
+        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
 @app.route('/sign_up/save', methods=['POST'])
@@ -76,7 +99,7 @@ def sign_up():
     return jsonify({'result': 'success'})
 
 
-#카타테코리 페이지에서 원하는종목 버튼 클릭했을때 데이터요청
+# 카타테코리 페이지에서 원하는종목 버튼 클릭했을때 데이터요청
 # @app.route("/api/sports/selectOne", methods=['GET'])
 # def sportsCategoryList():
 #     category = request.args.get('category')
@@ -95,7 +118,7 @@ def sign_up():
 def sportsCategory():
     category = request.args.get('category')
     print(category)
-    result = list(db.sports.find({'key': category},{'_id':False}))
+    result = list(db.sports.find({'key': category}, {'_id': True}))
     return jsonify({"result": result, "msg": "baseball data"})
 
 
@@ -105,30 +128,6 @@ def check_dup():
     username_receive = request.form['username_give']
     exists = bool(db.users.find_one({"username": username_receive}))
     return jsonify({'result': 'success', 'exists': exists})
-
-
-# 로그인 기능
-SECRET_KEY = 'SPARTA'
-
-
-@app.route('/api/login', methods=['POST'])
-def login():
-    username_receive = request.form['username_give']
-    password_receive = request.form['password_give']
-
-    pw_hash = hashlib.sha256(password_receive.encode('utf-8')).hexdigest()
-
-    result = db.users.find_one({'username': username_receive, 'password': pw_hash})
-
-    if result is not None:
-        payload = {
-            'id': username_receive,
-            'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
-        }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
-        return jsonify({'result': 'success', 'token': token})
-    else:
-        return jsonify({'result': 'fail', 'msg': '아이디/비밀번호가 일치하지 않습니다.'})
 
 
 @app.route("/api/profile")

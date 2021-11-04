@@ -7,6 +7,7 @@
     $(function () {
         let data = '{{ word }}'
         function showStar(data) {
+        console.log(data)
           $.ajax({
               type: 'GET',
               url: '/api/sports',
