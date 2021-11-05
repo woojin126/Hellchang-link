@@ -28,6 +28,7 @@ app = Flask(__name__)
 client = MongoClient('mongodb://rladnwls:rladnwls@3.36.122.47', 27017, authSource="admin")
 db = client.dbhellchang
 
+
 @app.route('/')
 def mainPage():
     return render_template('index.html')
@@ -40,7 +41,7 @@ def categoryPage(keyword):
 
 @app.route('/details/<id>')
 def DetailsPage(id):
-    return render_template('details.html', name="details" , id=id  )
+    return render_template('details.html', name="details", id=id)
 
 
 @app.route('/register')
@@ -53,8 +54,10 @@ def loginPage():
     msg = request.args.get("msg")
     return render_template("login.html", msg=msg, name="login")
 
+
 # 로그인 기능
 SECRET_KEY = 'SPARTA'
+
 
 @app.route('/api/login', methods=['POST'])
 def login():
@@ -100,7 +103,7 @@ def sign_up():
 def sportsCategory():
     category = request.args.get('category')
     print(category)
-    result = list(db.sports.find({'key': category}).sort('data',-1))
+    result = list(db.sports.find({'key': category}).sort('data', -1))
     for post in result:
         post['_id'] = str(post['_id'])
     return jsonify({"result": result})
@@ -108,9 +111,9 @@ def sportsCategory():
 
 @app.route("/api/details", methods=['GET'])
 def sportsDetails():
-    str_id= request.args.get('id')
+    str_id = request.args.get('id')
     obj_id = ObjectId(str_id)
-    result = db.sports.find_one({'_id':obj_id})
+    result = db.sports.find_one({'_id': obj_id})
     result['_id'] = str(result['_id'])
     print(result)
     return jsonify({"result": result})
@@ -145,31 +148,42 @@ def comment():
         payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
         memberId = payload["id"]
         comment = request.form['comment']
+        replyBoardId = request.form['replyBoardId']
 
         doc = {
             "username": memberId,
-            "comment": comment
+            "comment": comment,
+            "replyBoardId": replyBoardId
         }
 
-        db.hellchangComment.insert_one(doc)
+        db.comments.insert_one(doc)
         return jsonify({"result": "success", 'msg': '댓글 달기 완료'})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for("api/login"))
 
 
-@app.route('/update_like',methods=['POST'])
+@app.route("/api/comments", methods=['GET'])
+def comment_list():
+    replyBoardId = request.args.get('replyBoardId')
+    result = list(db.comments.find({'replyBoardId': replyBoardId}))
+    for post in result:
+        post['_id'] = str(post['_id'])
+    return jsonify({"result": result})
+
+
+@app.route('/update_like', methods=['POST'])
 def update_like():
     token_receive = request.cookies.get('mytoken')
     try:
         # payload에 토큰 정보랑 KEY랑 알고리즘으로 저장 시키면 토큰 정보를 볼 수 있다.
-        payload = jwt.decode(token_receive,SECRET_KEY,algorithms=['HS256'])
-        #payload에서 id 정보만 가져와서 usernmae이랑 비교해본다.
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        # payload에서 id 정보만 가져와서 usernmae이랑 비교해본다.
         user_info = db.users.find_one({"username": payload["id"]})
-        #포스트 아이디를 가지고와야 하는지 저장해야한다.
+        # 포스트 아이디를 가지고와야 하는지 저장해야한다.
         post_id_receive = request.form["post_id_give"]
-        #별표인지 하트인지 보내서 받아야한다.
+        # 별표인지 하트인지 보내서 받아야한다.
         type_receive = request.form["type_give"]
-        #좋아요지 싫어요인지 보내서 받아야한다.
+        # 좋아요지 싫어요인지 보내서 받아야한다.
         action_receive = request.form["action_give"]
         doc = {
             "post_id": post_id_receive,
@@ -183,7 +197,7 @@ def update_like():
 
         count = db.likes.count_documents({"post_id": post_id_receive, "type": type_receive})
         return jsonify({"result": "success", 'msg': 'updated', "count": count})
-    except (jwt.ExpiredSignatureError,jwt.exceptions.DecodeError):
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for(('home')))
 
 
