@@ -73,7 +73,7 @@ def login():
             'id': username_receive,
             'exp': datetime.utcnow() + timedelta(seconds=60 * 60 * 24)
         }
-        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+        token = jwt.encode(payload, SECRET_KEY, algorithm='HS256').decode('UTF-8')
 
         return jsonify({'result': 'success', 'token': token})
     else:
@@ -199,9 +199,9 @@ def sportsDetails():
 
 @app.route("/api/comments/delete", methods=['POST'])
 def commentDelete():
-    commentId = request.args.get('commentId')
-
-    db.comments.deleteOne({"_id": ObjectId(commentId)})
+    commentId = request.form['commentId']
+    comments = request.form['comments']
+    db.comments.delete_one({'_id': ObjectId(commentId)})
 
     return jsonify({"msg": "댓글삭제 완료"})
 
