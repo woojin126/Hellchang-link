@@ -99,23 +99,7 @@ def sign_up():
     return jsonify({'result': 'success'})
 
 
-@app.route("/api/sports", methods=['GET'])
-def sportsCategory():
-    category = request.args.get('category')
-    print(category)
-    result = list(db.sports.find({'key': category}).sort('data', -1))
-    for post in result:
-        post['_id'] = str(post['_id'])
-    return jsonify({"result": result})
 
-
-@app.route("/api/details", methods=['GET'])
-def sportsDetails():
-    str_id = request.args.get('id')
-    obj_id = ObjectId(str_id)
-    result = db.sports.find_one({'_id': obj_id})
-    result['_id'] = str(result['_id'])
-    return jsonify({"result": result})
 
 
 # 회원가입시, 아이디 중복검사 기능
@@ -129,7 +113,6 @@ def check_dup():
 @app.route("/api/profile")
 def profile():
     token = request.cookies.get('token')
-
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
         memberId = payload["id"]
@@ -169,34 +152,58 @@ def comment_list():
         post['_id'] = str(post['_id'])
     return jsonify({"result": result})
 
-
+#좋아요 토글 기능
 @app.route('/update_like', methods=['POST'])
 def update_like():
-    token_receive = request.cookies.get('mytoken')
+    token_receive = request.cookies.get('token')
     try:
         # payload에 토큰 정보랑 KEY랑 알고리즘으로 저장 시키면 토큰 정보를 볼 수 있다.
         payload = jwt.decode(token_receive,SECRET_KEY,algorithms=['HS256'])
-        print(payload)
         #payload에서 id 정보만 가져와서 usernmae이랑 비교해본다.
         user_info = db.users.find_one({"username": payload["id"]})
         # 포스트 아이디를 가지고와야 하는지 저장해야한다.
         post_id_receive = request.form["post_id_give"]
+        # 클라이언트에서 넘어오는 타입에 따라 db를 변경하기 위해
+        type_receive = request.form["type_give"]
         #좋아요지 싫어요인지 보내서 받아야한다.
         action_receive = request.form["action_give"]
         doc = {
             "post_id": post_id_receive,
             "username": user_info["username"],
+            "type": type_receive
         }
         if action_receive == "like":
             db.likes.insert_one(doc)
         else:
             db.likes.delete_one(doc)
-
-        count = db.likes.count_documents({"post_id": post_id_receive})
+        count = db.likes.count_documents({"post_id": post_id_receive,"type": type_receive})
         return jsonify({"result": "success", 'msg': 'updated', "count": count})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
-        return redirect(url_for(('home')))
+        return redirect(url_for('mainPage'))
 
+@app.route("/api/details", methods=['GET'])
+def sportsDetails():
+    token_receive = request.cookies.get('token')
+    try:
+        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
+        str_id = request.args.get('data_id')
+        obj_id = ObjectId(str_id)
+        result = db.sports.find_one({'_id': obj_id})
+        result['_id'] = str(result['_id'])
+        result["count_heart"] = db.likes.count_documents({"post_id": result["_id"], "type": "heart"})
+        result["heart_by_me"] = bool(db.likes.find_one({"post_id": result["_id"], "type": "heart","username":payload['id']}))
+        return jsonify({"result": result})
+    except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
+        return redirect(url_for('mainPage'))
+
+@app.route("/api/sports", methods=['GET'])
+def sportsCategory():
+    category = request.args.get('category')
+    result = list(db.sports.find({'key': category}).sort('data', -1))
+    for post in result:
+        post['_id'] = str(post['_id'])
+        post["count_heart"] = db.likes.count_documents({"post_id": post["_id"], "type": "heart"})
+    return jsonify({"result": result})
 
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)

@@ -3,98 +3,14 @@
 {{ super() }}
 {% endblock %}
 {% block content %}
-<script>
-    $(function () {
-        let data = '{{ word }}'
-
-        function showStar(data) {
-        console.log(data)
-          $.ajax({
-              type: 'GET',
-              url: '/api/sports',
-              data: {
-                  category:data
-              },
-              success: function (res) {
-                  let List = res['result']
-                  // List.forEach(item =>{
-                  //     if(item['link'].indexOf('https://www.youtube.com/watch?v=') >= 0){
-                  //         newList = [item]
-                  //         console.log(newList)
-                  //
-                  //     }
-                  // });
-                  console.log(List)
-                  cateGoryList(List)
-
-              }
-          });
-        }
-
-        function chageLang(data){
-            let lang = ''
-            if(data == 'baseball'){
-                lang = '야구'
-            }else if(data == 'baskball'){
-               lang = '농구'
-            }else{
-                lang = '축구'
-            }
-            $('.lang').append(lang)
-        }
-
-        chageLang(data)
-        showStar(data)
-        function NoKrwUse(link) {
-            // if (link.innerText.indexOf('https://www.youtube.com/watch?v=') >= 0) {
-                let ldl = link.innerText.indexOf('https://www.youtube.com/watch?v=') || ''
-            //   krw[i].classList.add('isHide')
-            // }
-        }
-
-        function cateGoryList(List){
-            let container = $('#pagination');
-            container.pagination({
-            dataSource: List,
-            pageSize: 9,
-            showPrevious: false,
-            showNext: false,
-            callback: function (data, pagination) {
-                var dataHtml = '<ul class="videoCards">';
-                $.each(data, function (index, item) {
-                    let li = `<li class="videoCard">
-                           <a href="/details/${item._id}">
-                            <div class="thumbnail">
-                                <img src='${item.image}'>
-                            </div>
-                            <div class="viedoTxt">
-                                 <h4 class="title">${item.title}</h4>
-                                 <div class="like">
-                                    <i class="fas fa-heart"></i>
-                                    <span class="num">342</span>
-                                 </div>
-                            </div>
-                           </a>
-                          </li>`
-
-                    dataHtml += li;
-                });
-                dataHtml += '</ul> ';
-
-                $("#data-container").html(dataHtml);
-            }
-        })
-        }
-
-    })
-</script>
+<script src="{{ url_for('static', filename='/js/category.js') }}"></script>
 <body>
 <h2 class="PageTitle"> 카테고리 - <span class="lang"></span></h2>
 <div id="demo1">
     <div id="data-container"></div>
     <div id="pagination"></div>
 </div>
-
-
 </body>
 {% endblock %}
+
+
