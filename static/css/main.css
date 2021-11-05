@@ -172,6 +172,12 @@
              padding: 12px;
              border-radius: 15px;
          }
+        #comment_btn{
+            height: 38px;
+            display: block;
+            width: 40px;
+            padding: 0px;
+        }
          .commentWindow{
              height:260px;
              background-color: #fff;
