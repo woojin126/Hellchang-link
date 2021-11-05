@@ -31,7 +31,7 @@ db = client.dbhellchang
 
 @app.route('/')
 def mainPage():
-    return render_template('index.html')
+    return render_template('index.html',name="Main")
 
 
 @app.route('/category/<keyword>')

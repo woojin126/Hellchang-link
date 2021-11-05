@@ -12,6 +12,12 @@
             justify-content: space-between;
             align-items: center;
             padding: 30px 16px;
+            flex-wrap: wrap;
+        }
+        .meunNav{
+            width: 100%;
+            text-align: right;
+            margin-top: 10px;
         }
         .logo img{
             width:120px
@@ -60,7 +66,7 @@
             margin-right: 10px;
         }
         .contents{
-            padding: 30px 16px;
+            padding: 10px 16px;
         }
          .sportsList{
             list-style: none;
