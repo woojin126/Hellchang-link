@@ -19,11 +19,18 @@
           },
           success: function (response) {
               let res = response['result']
-              console.log(res)
               const videoLink = res.link.replace("https://www.youtube.com/watch?v=", " ")
               const video = ` <div id="${res._id}">
                                 <iframe width="872" height="486" src="https://www.youtube.com/embed/${videoLink.replace(/\s/gi, "")}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-                                <div class="flex-center"><h2>${res.title}</h2> <div ><span class="likeNum">0</span><button onclick="count('plus')"><i class="fas fa-heart"></i>LIKE</button></div></div>
+                                    <div class="flex-center">
+                                        <h2>${res.title}</h2>
+                                        <div>
+                                            <span class="likeNum">0</span>
+                                            <button onclick="toggle_like(${res._id})">
+                                                <i class="fas fa-heart"></i>LIKE
+                                            </button>
+                                    </div>
+                                </div>
                               </div>
                             `
               $('.videoBox').append(video)
@@ -32,17 +39,16 @@
       })
   }
  )
-function toggle_like(post_id, type) {
-    console.log(post_id, type)
-    let $a_like = $(`#${post_id} a[aria-label='heart']`)
+function toggle_like(post_id) {
+    let PostId = post_id
+    console.log(post_id)
+    let $a_like = $(`#${PostId}`)
     let $i_like = $a_like.find("i")
-    if ($i_like.hasClass("fa-heart")) {
-        $.ajax({
+    $.ajax({
             type: "POST",
             url: "/update_like",
             data: {
                 post_id_give: post_id,
-                type_give: type,
                 action_give: "unlike"
             },
             success: function (response) {
@@ -50,24 +56,7 @@ function toggle_like(post_id, type) {
                 $i_like.addClass("fa-heart-o").removeClass("fa-heart")
                 $a_like.find("span.like-num").text(response["count"])
             }
-        })
-    } else {
-        $.ajax({
-            type: "POST",
-            url: "/update_like",
-            data: {
-                post_id_give: post_id,
-                type_give: type,
-                action_give: "like"
-            },
-            success: function (response) {
-                console.log("like")
-                $i_like.addClass("fa-heart").removeClass("fa-heart-o")
-                $a_like.find("span.like-num").text(response["count"])
-            }
-        })
-
-    }
+    })
 }
 
    //  function postLike(like) {

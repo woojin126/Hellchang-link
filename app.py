@@ -115,7 +115,6 @@ def sportsDetails():
     obj_id = ObjectId(str_id)
     result = db.sports.find_one({'_id': obj_id})
     result['_id'] = str(result['_id'])
-    print(result)
     return jsonify({"result": result})
 
 
@@ -176,26 +175,24 @@ def update_like():
     token_receive = request.cookies.get('mytoken')
     try:
         # payload에 토큰 정보랑 KEY랑 알고리즘으로 저장 시키면 토큰 정보를 볼 수 있다.
-        payload = jwt.decode(token_receive, SECRET_KEY, algorithms=['HS256'])
-        # payload에서 id 정보만 가져와서 usernmae이랑 비교해본다.
+        payload = jwt.decode(token_receive,SECRET_KEY,algorithms=['HS256'])
+        print(payload)
+        #payload에서 id 정보만 가져와서 usernmae이랑 비교해본다.
         user_info = db.users.find_one({"username": payload["id"]})
         # 포스트 아이디를 가지고와야 하는지 저장해야한다.
         post_id_receive = request.form["post_id_give"]
-        # 별표인지 하트인지 보내서 받아야한다.
-        type_receive = request.form["type_give"]
-        # 좋아요지 싫어요인지 보내서 받아야한다.
+        #좋아요지 싫어요인지 보내서 받아야한다.
         action_receive = request.form["action_give"]
         doc = {
             "post_id": post_id_receive,
             "username": user_info["username"],
-            "type": type_receive
         }
         if action_receive == "like":
             db.likes.insert_one(doc)
         else:
             db.likes.delete_one(doc)
 
-        count = db.likes.count_documents({"post_id": post_id_receive, "type": type_receive})
+        count = db.likes.count_documents({"post_id": post_id_receive})
         return jsonify({"result": "success", 'msg': 'updated', "count": count})
     except (jwt.ExpiredSignatureError, jwt.exceptions.DecodeError):
         return redirect(url_for(('home')))

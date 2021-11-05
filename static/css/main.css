@@ -53,6 +53,9 @@
             align-items: center;
             padding: 20px 0 ;
         }
+        .flex-center h2{
+            width: 81%;
+        }
         .likeNum{
             margin-right: 10px;
         }
