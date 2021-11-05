@@ -5,6 +5,11 @@
 {% block content %}
 <script>
   let id = "{{ id }}"
+
+  $(document).ready(function () {
+          getReply();
+ });
+
  $(function get_details() {
       $.ajax({
           type: "GET",
@@ -88,24 +93,94 @@ function toggle_like(post_id, type) {
    //    }
    //       postLike(number)
    //  }
+
+#댓글 전송
+    function reply(){
+    let comment = $("#msg").val();
+    if(comment ==""){
+      alert("메세지를 입력하세요")
+    }
+    $.ajax({
+         type: "POST",
+         url: '/api/comment',
+         data: {
+           comment:comment,
+           replyBoardId:id
+         },
+         success: function (response) {
+          window.location.reload();
+         }
+     });
+ }
+
+#댓글 전체 조회
+ function getReply() {
+                    $.ajax({
+                        type: "GET",
+                        url: "/api/comments",
+                        data: {
+                            replyBoardId: id
+                        },
+                        success: function (response) {
+                            let res = response['result']
+                            console.log(res)
+                            for (let i = 0; i < res.length; i++) {
+                                console.log(res[i].comment)
+                                let commentId = res[i]._id
+                                let comment = res[i].comment
+                                let username = res[i].username
+                                let html =
+                                                    `
+                            <div class="commentName flex">
+                                <div>
+                                 <p id="commentId" style="display:none">${commentId}</p>
+                                 <p id="userReplyName">${username}</p>
+                                 <p id="text">${comment}</p>
+                                </div>
+                                <div>
+                                 <button class="delBtn" onclick="deleteBtn()"><i class="fas fa-times"></i></button>
+                                 <button class="modifyBtn"><i class="fas fa-redo"></i></button>
+                               </div>
+                            </div>
+                              `
+                                $('#reply').append(html)
+                                                }
+                        }
+                    });
+                }
+# 댓글삭제
+function deleteBtn(){
+    console.log(commentId)
+
+     $.ajax({
+         type: "DELETE",
+         url: '/api/comment',
+         data: {
+
+         },
+         success: function (response) {
+          location.reload();
+         }
+     });
+ }
 </script>
 <body>
-  <div class="videoBox">
-  </div>
-  <div class="commentBox">
+ <div class="videoBox">
+</div>
+<div class="commentBox">
     <div class="commentWindow">
-     <ul>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-     </ul>
+        <ul>
+            <li class="comment" id="comment">
+                <p id="reply"></p>
+            </li>
+        </ul>
     </div>
-    <input id="msg"></input>
-  </div>
+    <div>
+        <p class="text"></p>
+        <input type="text" id="msg">
+        <button id="comment_btn" type="button" onclick="reply()"></button>
+    </div>
+
+</div>
 </body>
 {% endblock %}
