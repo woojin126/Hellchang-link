@@ -47,6 +47,15 @@
             gap: 10px;
             align-items: self-end;
         }
+        .flex-center{
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0 ;
+        }
+        .likeNum{
+            margin-right: 10px;
+        }
         .contents{
             padding: 30px 16px;
         }

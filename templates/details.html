@@ -4,29 +4,90 @@
 {% endblock %}
 {% block content %}
 <script>
-  let title= '{{ title }}'
-  let ti = `https://www.youtube.com/watch?v=${title}`
+  let id = "{{ id }}"
  $(function get_details() {
       $.ajax({
           type: "GET",
           url: '/api/details',
           data: {
-            link:ti.replace(/\s/gi, ""),
+            id:id,
           },
           success: function (response) {
               let res = response['result']
               console.log(res)
               const id = res.link.replace("https://www.youtube.com/watch?v=", " ")
-
-              const video = ` <h2 class="PageTitle"> ${res.title}</h2><iframe width="872" height="486" src="https://www.youtube.com/embed/${id.replace(/\s/gi, "")}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>`
+              const video = ` <div id="${res._id}">
+                                <iframe width="872" height="486" src="https://www.youtube.com/embed/${id.replace(/\s/gi, "")}" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                                <div class="flex-center"><h2>${res.title}</h2> <div ><span class="likeNum">0</span><button onclick="count('plus')"><i class="fas fa-heart"></i>LIKE</button></div></div>
+                              </div>
+                            `
               $('.videoBox').append(video)
 
           }
       })
   }
  )
+function toggle_like(post_id, type) {
+    console.log(post_id, type)
+    let $a_like = $(`#${post_id} a[aria-label='heart']`)
+    let $i_like = $a_like.find("i")
+    if ($i_like.hasClass("fa-heart")) {
+        $.ajax({
+            type: "POST",
+            url: "/update_like",
+            data: {
+                post_id_give: post_id,
+                type_give: type,
+                action_give: "unlike"
+            },
+            success: function (response) {
+                console.log("unlike")
+                $i_like.addClass("fa-heart-o").removeClass("fa-heart")
+                $a_like.find("span.like-num").text(response["count"])
+            }
+        })
+    } else {
+        $.ajax({
+            type: "POST",
+            url: "/update_like",
+            data: {
+                post_id_give: post_id,
+                type_give: type,
+                action_give: "like"
+            },
+            success: function (response) {
+                console.log("like")
+                $i_like.addClass("fa-heart").removeClass("fa-heart-o")
+                $a_like.find("span.like-num").text(response["count"])
+            }
+        })
 
+    }
+}
 
+   //  function postLike(like) {
+   //        $.ajax({
+   //            type: "POST",
+   //            url: '/api/like',
+   //            data: {
+   //              like:like,
+   //            },
+   //            success: function (response) {
+   //                let res = response['result']
+   //                console.log(res)
+   //            }
+   //        })
+   //    }
+   // function count(type)  {
+   //    const resultElement = document.querySelector('.likeNum');
+   //    let number = resultElement.innerText;
+   //    if(type === 'plus') {
+   //      number = parseInt(number) + 1;
+   //    }else if(type === 'minus')  {
+   //      number = parseInt(number) - 1;
+   //    }
+   //       postLike(number)
+   //  }
 </script>
 <body>
   <div class="videoBox">
@@ -34,86 +95,6 @@
   <div class="commentBox">
     <div class="commentWindow">
      <ul>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
-      <li class="comment">
-       <div class="commentName flex">
-         <h5>헱창보일</h5>
-        <button class="deleteBtn"><i class="fas fa-times"></i></button>
-       <button class="modifyBtn"><i class="fas fa-redo"></i></button>
-       </div>
-       <p class="text"> 와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우와우</p>
-      </li>
       <li class="comment">
        <div class="commentName flex">
          <h5>헱창보일</h5>
