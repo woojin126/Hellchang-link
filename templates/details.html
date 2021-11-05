@@ -6,6 +6,7 @@
 <script>
   let data_id = "{{ id }}"
 
+
   $(document).ready(function () {
           getReply();
           get_details()
@@ -137,7 +138,7 @@ function likeUp(post_id,type) {
                                  <p id="text">${comment}</p>
                                 </div>
                                 <div>
-                                 <button class="delBtn" onclick="deleteBtn(${ commentId })"><i class="fas fa-times"></i></button>
+                                 <button class="delBtn" onclick="deleteBtn('${ commentId }')"><i class="fas fa-times"></i></button>
                                  <button class="modifyBtn"><i class="fas fa-redo"></i></button>
                                </div>
                             </div>
@@ -149,11 +150,10 @@ function likeUp(post_id,type) {
   }
   // # 댓글삭제
  function deleteBtn(Id){
-        console.log(Id)
 
          $.ajax({
-             type: "DELETE",
-             url: '/api/comment',
+             type: "POST",
+             url: '/api/comments/delete',
              data: {
                 Id:Id
              },
